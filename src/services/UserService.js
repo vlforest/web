@@ -27,7 +27,6 @@ let createUser = async (userData) => {
 
     return user;
   } catch (error) {
-    console.error("Error creating user: ", error);
     throw error;
   }
 };
@@ -45,6 +44,17 @@ let login = async (email, password) => {
     if (!isValidPassword) {
       throw new Error("Invalid password");
     }
+    //Kiểm ta token hiện tại của người dùng
+    const existingToken = await db.Token.findAll({
+      where: {
+        user_id: user.id,
+        isDeleted: null,
+      },
+    });
+    // Vô hiệu hoá tất cả các token của người dùng
+    await Promise.all(
+      existingToken.map((token) => token.update({ isDeleted: new Date() }))
+    );
 
     // Tạo token JWT
     const token = jwt.sign(
@@ -63,7 +73,19 @@ let login = async (email, password) => {
     // Trả về người dùng và token
     return { user, token };
   } catch (error) {
-    console.error("Error logging in: ", error);
+    throw error;
+  }
+};
+// Phương thức đăng xuất người dùng
+let logout = async (token) => {
+  try {
+    // Vô hiệu hoá token của người dùng
+    await db.Token.update(
+      { isDeleted: new Date() },
+      { where: { token: token } }
+    );
+    return true;
+  } catch (error) {
     throw error;
   }
 };
@@ -77,7 +99,6 @@ let getUserById = async (id) => {
     }
     return user;
   } catch (error) {
-    console.error("Error getting user by ID: ", error);
     throw error;
   }
 };
@@ -102,7 +123,6 @@ let updateUser = async (id, userData) => {
     });
     return user;
   } catch (error) {
-    console.error("Error updating user: ", error);
     throw error;
   }
 };
@@ -117,7 +137,6 @@ let deleteUser = async (id) => {
     await user.destroy();
     return true;
   } catch (error) {
-    console.error("Error deleting user: ", error);
     throw error;
   }
 };
@@ -136,7 +155,32 @@ let changePassword = async (id, newPassword) => {
 
     return user;
   } catch (error) {
-    console.error("Error changing password: ", error);
+    throw error;
+  }
+};
+// Phương thức lấy danh sách người dùng
+let getUsers = async () => {
+  try {
+    const users = await db.User.findAll();
+    return users;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Phương thức thay đổi roles dành cho admin
+let changeRole = async (id) => {
+  try {
+    const user = await db.User.findByPk(id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    if (user.role === "admin") {
+      throw new Error("Cannot change role of an admin");
+    }
+    await user.update({ role: "user" });
+    return user;
+  } catch (error) {
     throw error;
   }
 };
@@ -144,8 +188,11 @@ let changePassword = async (id, newPassword) => {
 module.exports = {
   createUser,
   login,
+  logout,
   getUserById,
   updateUser,
   deleteUser,
   changePassword,
+  getUsers,
+  changeRole,
 };
