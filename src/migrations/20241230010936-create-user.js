@@ -9,14 +9,12 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      role_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "Roles",
-          key: "id",
-        },
+      role: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValues: "user",
       },
-      fristName: {
+      firstName: {
         type: Sequelize.STRING,
       },
       lastName: {
@@ -34,13 +32,13 @@ module.exports = {
       district: {
         type: Sequelize.STRING,
       },
+      city: {
+        type: Sequelize.STRING,
+      },
       country: {
         type: Sequelize.STRING,
       },
       phone: {
-        type: Sequelize.STRING,
-      },
-      status: {
         type: Sequelize.STRING,
       },
       createdAt: {

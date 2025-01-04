@@ -8,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      4;
       this.belongsTo(models.Category, { foreignKey: "category_id" });
     }
   }
