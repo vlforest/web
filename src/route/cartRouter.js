@@ -1,17 +1,17 @@
 import express from "express";
-import { auth } from "../middlewares/authMiddleware";
+import { auth } from "../middlewares/auth";
 import {
   addToCart,
-  viewCart,
-  updateCartItem,
-  removeCartItem,
+  getCart,
+  updateQuantity,
+  removeItem,
 } from "../controllers/cartController";
 
 let router = express.Router();
 
 router.post("/cart/add", auth, addToCart);
-router.get("/cart", auth, viewCart);
-router.put("/cart/update", auth, updateCartItem);
-router.delete("/cart/remove", auth, removeCartItem);
+router.get("/cart", auth, getCart);
+router.put("/cart/update", auth, updateQuantity);
+router.delete("/cart/remove", auth, removeItem);
 
 module.exports = router;

@@ -3,8 +3,9 @@ import homeController from "../controllers/homeController";
 import userRouter from "./userRouter";
 import productRouter from "./productRouter";
 import uploadRouter from "./uploadRouter";
-import cartRouter from "./cartRouter"; // Import cart router
-import orderRouter from "./orderRouter"; // Import order router
+import cartRouter from "./cartRouter";
+import orderRouter from "./orderRouter";
+import reviewRouter from "./reviewRouter";
 
 let router = express.Router();
 
@@ -17,6 +18,7 @@ let initWebRoutes = (app) => {
   app.use("/api", uploadRouter);
   app.use("/api", cartRouter);
   app.use("/api", orderRouter);
+  app.use("/api", reviewRouter);
 };
 
 module.exports = initWebRoutes;
